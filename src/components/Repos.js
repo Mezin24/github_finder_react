@@ -5,7 +5,6 @@ import { ExampleChart, Pie3D, Column3D, Bar3D, Doughnut2D } from './Charts';
 
 const Repos = () => {
   const { repos } = useGithubContext();
-  console.log(repos);
 
   const languages = repos.reduce((total, repo) => {
     const { language, stargazers_count: stars } = repo;
