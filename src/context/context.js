@@ -39,15 +39,20 @@ const GithubProvider = ({ children }) => {
     if (response) {
       setGithubUser(response.data);
       const { followers_url, login } = response.data;
-      console.log(response.data);
 
-      axios(`${rootUrl}/users/${login}/repos?per_page=100`).then(({ data }) =>
-        setRepos(data)
-      );
-      axios(followers_url).then(({ data }) => setFollowers(data));
-
-      // https://api.github.com/users/john-smilga/repos?per_page=100
-      // https://api.github.com/users/john-smilga/followers
+      await Promise.allSettled([
+        axios(`${rootUrl}/users/${login}/repos?per_page=100`),
+        axios(followers_url),
+      ]).then((res) => {
+        const [repos, followers] = res;
+        const status = 'fulfilled';
+        if (repos.status === status) {
+          setRepos(repos.value.data);
+        }
+        if (followers.status === status) {
+          setFollowers(followers.value.data);
+        }
+      });
     } else {
       toggleError(true, 'there is no user with this nick');
     }
