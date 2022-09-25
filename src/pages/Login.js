@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import loginImg from '../images/login-img.svg';
@@ -8,7 +9,9 @@ const Login = () => {
       <div className='container'>
         <img src={loginImg} alt='github user' />
         <h1>github user</h1>
-        <button className='btn'>login</button>
+        <Link className='btn' to='/'>
+          login
+        </Link>
       </div>
     </Wrapper>
   );

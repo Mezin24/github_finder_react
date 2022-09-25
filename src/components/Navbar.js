@@ -1,11 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAuth0 } from '@auth0/auth0-react';
 
 const Navbar = () => {
   return (
     <Wrapper>
-      <h2>navbar component</h2>
+      <Link to='/login' className='btn'>
+        Logout
+      </Link>
     </Wrapper>
   );
 };
