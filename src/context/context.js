@@ -13,32 +13,51 @@ const GithubProvider = ({ children }) => {
   const [repos, setRepos] = useState(mockRepos);
   const [followers, setFollowers] = useState(mockFollowers);
   const [requests, setRequests] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState({ show: false, msg: '' });
 
   const fetchRequests = async () => {
     try {
       const { data } = await axios(`${rootUrl}/rate_limit`);
-      const { remaining: rate } = data.rate;
+      let { remaining: rate } = data.rate;
       setRequests(rate);
       if (rate === 0) {
+        toggleError(true, 'Sorry, you have exceeded your hourly rate limit');
       }
     } catch (error) {
       // throw error
     }
   };
 
-  useEffect(() => {
+  const fetchUser = async (user) => {
+    toggleError();
+    setIsLoading(true);
+    const response = await axios(`https://api.github.com/users/${user}`).catch(
+      (err) => console.log(err.message)
+    );
+    if (response) {
+      setGithubUser(response.data);
+    } else {
+      toggleError(true, 'there is no user with this nick');
+    }
+    setIsLoading(false);
     fetchRequests();
-    // eslint-disable-next-line
-  }, []);
+  };
+
+  const toggleError = (show = false, msg = '') => {
+    setError({ msg, show });
+  };
 
   return (
     <GithubContext.Provider
       value={{
         githubUser,
+        isLoading,
         repos,
         followers,
         requests,
+        error,
+        fetchUser,
       }}
     >
       {children}
